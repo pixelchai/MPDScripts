@@ -1,5 +1,6 @@
 import os
 import re
+import mutagen
 
 class MPDConfig:
     def __init__(self,path=None):
@@ -25,6 +26,7 @@ class MPDConfig:
 
         raw = block_rgx.sub('',raw) # remove sections
         self.data.update(self.parse_values(raw))
+        return self
 
     def parse_values(self,text:str):
         data={}
@@ -35,6 +37,10 @@ class MPDConfig:
                 data[match.group(1)]=match.group(3)
         return data
 
-m = MPDConfig()
-m.parse()
-print(m)
+if __name__ == '__main__':
+    music_dir = MPDConfig().parse().data['music_directory']
+
+    categories = ["BEST+", "Best", "Good",  "Ok+",   "Ok",  "Out",  "Bad","Unrated"]
+    bins =       [    248,    219,    191,    157,    123,     59,      1,        0]
+
+    # commit existing playlists to Mp3

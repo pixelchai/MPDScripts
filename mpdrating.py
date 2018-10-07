@@ -45,8 +45,12 @@ if __name__ == '__main__':
 
     categories = ["0 - BEST+", "1 - Best", "2 - Good",  "3 - Ok+",   "4 - Ok",  "5 - Out",  "6 - Bad","7 - Unrated"]
     bins =       [        248,        219,        191,        157,        123,         59,          1,            0]
+    # write_bins compatible with MusicBee (and therefore) WMP, FooBar, etc:
+    write_bins = [        255,        245,        196,        186,        128,         64,          1,            0]
 
     playlists = {} # name: paths
+    # commit playlists to mp3s:
+    #todo
 
     # make playlists from mp3s
     for root, _, filenames in os.walk(os.path.expanduser(music_dir)):
@@ -68,7 +72,6 @@ if __name__ == '__main__':
                 playlist = playlists.get(categories[-1], [])
                 playlist.append(song)
                 playlists[categories[-1]] = playlist
-
 
     # write playlists to mpd
     for k,v in playlists.items():

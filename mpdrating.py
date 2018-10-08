@@ -1,42 +1,7 @@
 import fnmatch
 import os
-import re
 import mutagen.id3
-
-class MPDConfig:
-    def __init__(self,path=None):
-        """
-        :raises IOError: if mpd config file cannot be found
-        """
-        if path is None:
-            path = os.path.expanduser('~/.mpd/mpd.conf')
-        if not os.path.isfile(path):
-            raise IOError
-        self.path = path
-        self.data = {}
-
-    def parse(self):
-        with open(self.path, 'r') as f:
-            raw = f.read()
-
-        raw = re.sub(r'#.*','',raw,flags=re.MULTILINE) # remove comments
-
-        block_rgx = re.compile(r'(\w+)\s*{([^}]*)}')
-        for section in block_rgx.finditer(raw):
-            self.data[section.group(1)]=self.parse_values(section.group(2))
-
-        raw = block_rgx.sub('',raw) # remove sections
-        self.data.update(self.parse_values(raw))
-        return self
-
-    def parse_values(self,text:str):
-        data={}
-        value_rgx = re.compile(r'(\w+)\s+("|)([^"]*)("|)',flags=re.MULTILINE)
-        for line in text.splitlines():
-            match = value_rgx.search(line)
-            if match is not None:
-                data[match.group(1)]=match.group(3)
-        return data
+from mpd import MPDConfig
 
 if __name__ == '__main__':
     mpdconfig = MPDConfig().parse()
@@ -48,8 +13,6 @@ if __name__ == '__main__':
     write_bins = [        255,        245,        196,        186,        128,         64,          1,            0]
 
     playlists = {} # name: paths
-    # commit playlists to mp3s:
-    #todo
 
     # make playlists from mp3s
     for root, _, filenames in os.walk(os.path.expanduser(music_dir)):

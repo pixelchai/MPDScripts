@@ -4,16 +4,12 @@ from pprint import pprint
 
 import click
 import mutagen.id3
-from gspread.exceptions import APIError
-
 from mpd import MPDConfig
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import hyou
 
 @click.command()
 @click.option('-k','--keyfile',envvar='KEYFILE',prompt=True)
-def backup(keyfile, sheet_url=r'https://docs.google.com/spreadsheets/d/'
-                              r'11ZzdMLfILRPZW0NDDXSlwHlyVp13PvAeRTZnoVEWpqU/edit?usp=sharing'):
+def backup(keyfile, sheet_id='11ZzdMLfILRPZW0NDDXSlwHlyVp13PvAeRTZnoVEWpqU'):
     # read mpd config
     mpd = MPDConfig().parse()
 
@@ -50,27 +46,31 @@ def backup(keyfile, sheet_url=r'https://docs.google.com/spreadsheets/d/'
 
             playlists[name] = playlist
 
-    # gspread updating
-    client = gspread.authorize(
-        ServiceAccountCredentials.from_json_keyfile_name(keyfile,['https://spreadsheets.google.com/feeds']))
-    sh = client.open_by_url(sheet_url)
+    # spreadsheet updating
+    sh = hyou.login(keyfile)[sheet_id]
 
     # worksheet for each playlist
     for pname,playlist in playlists.items():
         # create if not exist
         try:
             sh.add_worksheet(pname,"1024","3")
-            pass
-        except APIError:
+        except:
             pass
 
-        worksheet = sh.worksheet(pname)
-        worksheet.clear()
+        worksheet = sh[pname]
 
-        for i in range(len(playlist[0])):
-            col = [list(reversed(data))[i] for data in playlist]
-            worksheet.insert_row(col)
-            # pprint([x for x in col])
+        # for i in range(len(playlist[0])):
+        #     col = [list(reversed(data))[i] for data in playlist]
+        #     # worksheet.insert_row(col)
+        #     # pprint([x for x in col])
+        i=0
+        for data in playlist:
+            j=0
+            for cell in data:
+                worksheet[i][j]=cell
+                j+=1
+            i+=1
+        worksheet.commit()
 
 
 if __name__ == '__main__':

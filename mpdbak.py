@@ -1,5 +1,7 @@
 import fnmatch
 import os
+from pprint import pprint
+
 import click
 import mutagen.id3
 from gspread.exceptions import APIError
@@ -57,18 +59,18 @@ def backup(keyfile, sheet_url=r'https://docs.google.com/spreadsheets/d/'
     for pname,playlist in playlists.items():
         # create if not exist
         try:
-            # sh.add_worksheet(pname,"1024","3")
+            sh.add_worksheet(pname,"1024","3")
             pass
         except APIError:
             pass
 
         worksheet = sh.worksheet(pname)
-        # worksheet.clear()
+        worksheet.clear()
 
         for i in range(len(playlist[0])):
-            col = [data[i] for data in playlist]
-            #todo
-
+            col = [list(reversed(data))[i] for data in playlist]
+            worksheet.insert_row(col)
+            # pprint([x for x in col])
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import re
+import os
 
 class MPDConfig:
     def __init__(self,path=None):

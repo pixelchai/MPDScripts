@@ -24,6 +24,10 @@ if __name__ == '__main__':
                         if os.path.isfile(os.path.join(music_dir,line)): # only if actual file exists
                             if line not in playlist: # not duplicate
                                 playlist.append(line)
+                            else:
+                                print('LocalDup: '+line)
+                        else:
+                            print('Nonexistant: '+line)
 
             playlists[name] = playlist
 
@@ -38,6 +42,8 @@ if __name__ == '__main__':
                 playlist = playlists.get('unrated',[])
                 playlist.append(song)
                 playlists['unrated'] = playlist
+
+                print('Unrated: '+song)
 
     # check duplicates
     # flip dictionary (item --> playlists)

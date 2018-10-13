@@ -3,6 +3,8 @@ import os
 import mutagen.id3
 from mpd import MPDConfig
 
+exit()
+
 if __name__ == '__main__':
     mpdconfig = MPDConfig().parse()
     music_dir = mpdconfig.data['music_directory']

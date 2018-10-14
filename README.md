@@ -11,3 +11,4 @@
 - Eliminating songs in multiple playlists (TODO): mpdunrated.py
 - Volume normalisation: mp3gain
 - Song tagging: picard
+- selecting a representational subset of music (for phone, etc): mpdsubset.py
